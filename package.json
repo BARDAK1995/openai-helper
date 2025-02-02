@@ -6,6 +6,11 @@
   "engines": {
     "vscode": "^1.96.0"
   },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/BARDAK1995/openai-helper.git"
+  },
   "categories": [
     "Other"
   ],

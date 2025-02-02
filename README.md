@@ -1,71 +1,37 @@
-# openai-helper README
+# OpenAI Helper
 
-This is the README for your extension "openai-helper". After writing up a brief description, we recommend including the following sections.
+OpenAI Helper is a VS Code extension that leverages OpenAI's reasoning models to help you understand your code and generate high-level flowcharts. With a simple right-click in the editor, you can ask questions about your code or generate a flowchart that outlines the code's structure, functions, and data flow.
 
 ## Features
 
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
+- **Ask About Code:** Right-click anywhere in the code to ask OpenAI questions about it.
+- **Generate Flowchart:** Right-click to generate a high-level flowchart that explains the code's structure and interactions between functions.
+- **Configurable Reasoning:** Uses OpenAI's reasoning models with a balanced "medium" reasoning effort for complex tasks.
+- **Easy Setup:** Simply set your `OPENAI_API_KEY` and start using the extension!
 
-For example if there is an image subfolder under your extension project workspace:
+## Installation
 
-\!\[feature X\]\(images/feature-x.png\)
+1. Install the extension from the VSIX file or the Visual Studio Marketplace.
+2. Set your environment variable `OPENAI_API_KEY` before launching VS Code, or update your debug configuration accordingly.
 
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
+## Usage
 
-## Requirements
+- **Ask About Code:** Right-click in the editor and select **"Ask OpenAI about this code"**.
+- **Generate Flowchart:** Right-click in the editor and select **"Generate Code Flowchart"**.
 
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
-
-## Extension Settings
-
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
-
-For example:
-
-This extension contributes the following settings:
-
-* `myExtension.enable`: Enable/disable this extension.
-* `myExtension.thing`: Set to `blah` to do something.
-
-## Known Issues
-
-Calling out known issues can help limit users opening duplicate issues against your extension.
-
-## Release Notes
-
-Users appreciate release notes as you update your extension.
-
-### 1.0.0
-
-Initial release of ...
-
-### 1.0.1
-
-Fixed issue #.
-
-### 1.1.0
-
-Added features X, Y, and Z.
+For further details, please see the [documentation](#) or contact the extension author.
 
 ---
 
-## Following extension guidelines
+Adjust this template as needed for your extension.
 
-Ensure that you've read through the extensions guidelines and follow the best practices for creating your extension.
+---
 
-* [Extension Guidelines](https://code.visualstudio.com/api/references/extension-guidelines)
+### 2. Package Again
 
-## Working with Markdown
+Once you've updated and saved the README.md file:
 
-You can author your README using Visual Studio Code. Here are some useful editor keyboard shortcuts:
+1. Run the packaging command again:
 
-* Split the editor (`Cmd+\` on macOS or `Ctrl+\` on Windows and Linux).
-* Toggle preview (`Shift+Cmd+V` on macOS or `Shift+Ctrl+V` on Windows and Linux).
-* Press `Ctrl+Space` (Windows, Linux, macOS) to see a list of Markdown snippets.
-
-## For more information
-
-* [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
-* [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
-
-**Enjoy!**
+   ```bash
+   vsce package
