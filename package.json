@@ -10,20 +10,35 @@
     "Other"
   ],
   "activationEvents": [
-    "onCommand:openai-helper.askQuestion"
+    "onCommand:openai-helper.askQuestion",
+    "onCommand:openai-helper.getFlowchart"
   ],
   "main": "./dist/extension.js",
   "contributes": {
     "commands": [
       {
-        "command": "openai-helper.helloWorld",
-        "title": "Hello World"
-      },
-      {
         "command": "openai-helper.askQuestion",
         "title": "Ask OpenAI about this code"
+      },
+      {
+        "command": "openai-helper.getFlowchart",
+        "title": "Generate Code Flowchart"
       }
-    ]
+    ],
+    "menus": {
+      "editor/context": [
+        {
+          "command": "openai-helper.askQuestion",
+          "when": "editorTextFocus",
+          "group": "navigation"
+        },
+        {
+          "command": "openai-helper.getFlowchart",
+          "when": "editorTextFocus",
+          "group": "navigation"
+        }
+      ]
+    }
   },
   "scripts": {
     "vscode:prepublish": "npm run package",
