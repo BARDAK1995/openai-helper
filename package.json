@@ -28,6 +28,10 @@
       {
         "command": "openai-helper.getFlowchart",
         "title": "Generate Code Flowchart"
+      },
+      {
+        "command": "openai-helper.analyzeCode",
+        "title": "Analyze Code for Improvements"
       }
     ],
     "menus": {
@@ -39,6 +43,11 @@
         },
         {
           "command": "openai-helper.getFlowchart",
+          "when": "editorTextFocus",
+          "group": "navigation"
+        },
+        {
+          "command": "openai-helper.analyzeCode",
           "when": "editorTextFocus",
           "group": "navigation"
         }

@@ -59,15 +59,15 @@ async function askAboutCode(): Promise<void> {
     return;
   }
   
-  // Construct the prompt for OpenAI
-  let prompt = `I have the following code:\n\n${fullText}\n\n`;
+  // Construct the prompt with the instruction first, followed by the code data
+  let prompt = `My question: ${userQuestion}\n\n`;
+  prompt += `I have the following code:\n\n${fullText}\n\n`;
   if (selectedText) {
     prompt += `I have selected this snippet:\n\n${selectedText}\n\n`;
   }
-  prompt += `My question: ${userQuestion}`;
   
-  // Limit the prompt to approximately 20000 characters (rough approximation)
-  prompt = limitPrompt(prompt, 20000);
+  // Limit the prompt (adjusted limit)
+  prompt = limitPrompt(prompt, 100000);
 
   // Show progress and call the API
   vscode.window.withProgress({
@@ -84,7 +84,7 @@ async function askAboutCode(): Promise<void> {
     });
     
     // Show the document in a new editor column (to the right) and enable word wrap
-    const textEditor = await vscode.window.showTextDocument(document, {
+    await vscode.window.showTextDocument(document, {
       viewColumn: vscode.ViewColumn.Beside,
       preview: false
     });
@@ -106,20 +106,20 @@ async function generateFlowchart(): Promise<void> {
   // Get full document text (the context for the flowchart)
   const fullText = editor.document.getText();
   
-  // Construct a prompt asking for a high-level flowchart
-  let prompt = `I have the following code:\n\n${fullText}\n\n`;
-  prompt += `Please provide a high-level flowchart that outlines the code structure. For each function, describe what it does, how it is called, the order of function calls, and how data flows between them. Provide a clear, concise overview without excessive details.`;
+  // Construct the prompt with the instruction first, then the code
+  let prompt = `Please provide a high-level flowchart that outlines the code structure. For each function, describe what it does, how it is called, the order of function calls, and how data flows between them. Provide a clear, concise overview without excessive details.\n\n`;
+  prompt += `I have the following code:\n\n${fullText}\n\n`;
   
-  // Limit the prompt to approximately 20000 characters (rough approximation)
-  prompt = limitPrompt(prompt, 20000);
+  // Limit the prompt (adjusted limit)
+  prompt = limitPrompt(prompt, 250000);
   
-  // Show progress and call the API with the same reasoning effort ("medium")
+  // Show progress and call the API
   vscode.window.withProgress({
     location: vscode.ProgressLocation.Notification,
     title: "Generating flowchart...",
     cancellable: false
   }, async () => {
-    const answer = await callOpenAI(prompt, "medium", 5000);
+    const answer = await callOpenAI(prompt, "high", 10000);
     
     // Open a new text document to display the flowchart
     const document = await vscode.workspace.openTextDocument({
@@ -128,7 +128,50 @@ async function generateFlowchart(): Promise<void> {
     });
     
     // Show the document in a new editor column (to the right) and enable word wrap
-    const textEditor = await vscode.window.showTextDocument(document, {
+    await vscode.window.showTextDocument(document, {
+      viewColumn: vscode.ViewColumn.Beside,
+      preview: false
+    });
+    
+    await vscode.workspace.getConfiguration('editor', document.uri)
+      .update('wordWrap', 'on', vscode.ConfigurationTarget.Global);
+  });
+}
+
+// New function for analyzing code improvements
+async function analyzeCodeImprovements(): Promise<void> {
+  const editor = vscode.window.activeTextEditor;
+  if (!editor) {
+    vscode.window.showInformationMessage('No active editor found.');
+    return;
+  }
+  
+  // Get full document text (the context for the analysis)
+  const fullText = editor.document.getText();
+  
+  // Construct the prompt with the instruction first, then the code
+  let prompt = `Please analyze the following code and identify any inefficient implementations, mistakes, or areas where improvements can be made. The improvements should make the code more readable, compact, elegant, and efficient, without introducing bugs. List what can be done, how to do it, and why it would work, in a concise manner. and list them in a order of increasing diffuculty starting with the easiest safest one. \n\n`;
+  prompt += `I have the following code:\n\n${fullText}\n\n`;
+  
+  // Limit the prompt (adjust as necessary)
+  prompt = limitPrompt(prompt, 250000);
+  
+  // Show progress and call the API
+  vscode.window.withProgress({
+    location: vscode.ProgressLocation.Notification,
+    title: "Analyzing code for improvements...",
+    cancellable: false
+  }, async () => {
+    const answer = await callOpenAI(prompt, "medium", 5000);
+    
+    // Create a new untitled text document with the answer
+    const document = await vscode.workspace.openTextDocument({
+      content: answer,
+      language: 'plaintext'
+    });
+    
+    // Show the document in a new editor column (to the right) and enable word wrap
+    await vscode.window.showTextDocument(document, {
       viewColumn: vscode.ViewColumn.Beside,
       preview: false
     });
@@ -158,8 +201,17 @@ export function activate(context: vscode.ExtensionContext) {
       vscode.window.showErrorMessage(`Error: ${error.message}`);
     }
   });
+  
+  // Register command for analyzing code improvements
+  const analyzeCodeDisposable = vscode.commands.registerCommand('openai-helper.analyzeCode', async () => {
+    try {
+      await analyzeCodeImprovements();
+    } catch (error: any) {
+      vscode.window.showErrorMessage(`Error: ${error.message}`);
+    }
+  });
 
-  context.subscriptions.push(askQuestionDisposable, flowchartDisposable);
+  context.subscriptions.push(askQuestionDisposable, flowchartDisposable, analyzeCodeDisposable);
 }
 
 export function deactivate() {}
